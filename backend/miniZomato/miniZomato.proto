@@ -1,0 +1,41 @@
+syntax = "proto3";
+option go_package = "./";
+
+package miniZomato;
+
+service Add_get_restaurant {
+    // Obtains the restaurants available within the database.  Results are
+    // streamed rather than returned at once (e.g. in a response message with a
+    // repeated field), as the database contain a
+    // huge number of restaurants.
+    rpc ListRestaurants(GetListRequest) returns (RestaurantList) {}
+
+
+    rpc AddRestaurant(Restaurant) returns (AddedConfirmation) {}
+
+
+}
+
+message Restaurant {
+    string name =  1;
+    string rating = 2;
+    string cuisine = 3;
+    string address = 4;
+    string openingTime = 5;
+    string costForTwo = 6;
+}
+
+//containing result for inserting new data
+message AddedConfirmation {
+    string addedConfirmation = 1;
+}
+
+//containing request for list
+message GetListRequest {
+    string getListRequest = 1;
+}
+
+//containing marshalled list
+message RestaurantList {
+    string restaurantList = 1;
+}
