@@ -6,7 +6,7 @@ import {Add, Menu} from "@material-ui/icons";
 import axios from "axios"
 
 const useStyles = makeStyles((theme)=>({
-      paper: {
+    paper: {
         margin: "10px 5px",
         display: 'flex',
         flexDirection: 'column',
@@ -28,7 +28,6 @@ function RestaurantList(){
     const [list, setList] = useState([]);
 
     useEffect(()=>{
-        //get restaurant list when the page loads
         axios.get("http://localhost:5000/restaurants")
         .then(async (response)=>{
             console.log(response.data);
@@ -99,7 +98,7 @@ function RestaurantList(){
         <Container component="main" maxWidth="md" style={{paddingTop:"60px"}}>
             <CssBaseline/>
             <Grid container style={{justifyContent:"center"}}>
-                {/* Render all cards */}
+
                 {list.map((item)=>{return cardBuilder(item);})}
 
             </Grid>
