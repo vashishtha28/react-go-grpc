@@ -55,7 +55,7 @@ type grpcServer struct {
 func (s *grpcServer) ListRestaurants(ctx context.Context, req *pb.GetListRequest) (*pb.RestaurantList, error) {
 	//retirieve values from database
 	var tempRestaurants []Restaurant
-	db.Find(&tempRestaurants)
+	db.Order("name asc").Find(&tempRestaurants)
 
 	//convert objects to JSON to send message to the client
 	urlsJson, _ := json.Marshal(tempRestaurants)
