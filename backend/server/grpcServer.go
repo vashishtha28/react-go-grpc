@@ -65,9 +65,7 @@ func (s *grpcServer) ListRestaurants(ctx context.Context, req *pb.GetListRequest
 
 //save new restaurant to database -> simple rpc
 func (s *grpcServer) AddRestaurant(ctx context.Context, restaurant *pb.Restaurant) (*pb.AddedConfirmation, error) {
-	//connect to db --> done in func main
-	//read data from request body --> direct acess available. No need to unmarshal here
-	//add to mySQL database
+	//read data from request body --> direct acess available. No need to unmarshal
 	newRestaurant := Restaurant{
 		Name:        restaurant.Name,
 		Rating:      restaurant.Rating,
@@ -76,6 +74,8 @@ func (s *grpcServer) AddRestaurant(ctx context.Context, restaurant *pb.Restauran
 		OpeningTime: restaurant.OpeningTime,
 		CostForTwo:  restaurant.CostForTwo,
 	}
+
+	//add to mySQL database
 	db.Create(&newRestaurant)
 	return &pb.AddedConfirmation{AddedConfirmation: "successfully added new restaurant"}, nil
 }
@@ -83,21 +83,17 @@ func (s *grpcServer) AddRestaurant(ctx context.Context, restaurant *pb.Restauran
 // use godot package to load/read the .env file and
 // return the value of the key
 func goDotEnvVariable(key string) string {
-
 	// load .env file
 	err := godotenv.Load(".env")
-
 	if err != nil {
 		log.Fatalf("Error loading .env file")
 	}
-
 	return os.Getenv(key)
 }
 
 func main() {
-	// godotenv package
+	// fetch variable values from .env
 	username := goDotEnvVariable("USERNAME_DB")
-	// godotenv package
 	password := goDotEnvVariable("PASSWORD_DB")
 
 	//connect to mySQL db //////////////////////////////

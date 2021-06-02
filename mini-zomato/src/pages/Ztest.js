@@ -49,6 +49,7 @@ function Ztest(){
             alert("Some fields were left empty. Please fill all");
         }
         else{
+            //make http post request with the form data
             axios.post("http://localhost:5000/add", data)
             .then((response)=>{
                 console.log(response);

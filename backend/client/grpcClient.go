@@ -49,14 +49,8 @@ func findRestaurants(w http.ResponseWriter, r *http.Request) {
 	//headers
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	// w.Header().Set("Access-Control-Allow-Origin", "*")
-	// //w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
-	// //w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
-	// w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-	// w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
-	// w.Header().Set("Content-Type", "application/json")
 
-	//establishh connection
+	//establish connection with grpc server
 	conn, err := grpc.Dial(*serverAddr, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		log.Fatalf("failed to dial: %v", err)
@@ -67,7 +61,7 @@ func findRestaurants(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	//call for the service
+	//call for List restaurant service
 	result, err := client.ListRestaurants(ctx, &pb.GetListRequest{GetListRequest: "GET"})
 	if err != nil {
 		log.Fatalf("Coud not get restaurants list: %v", err)
@@ -75,6 +69,7 @@ func findRestaurants(w http.ResponseWriter, r *http.Request) {
 	//the variable to store unmarshalled json
 	var receivedList []Restaurant
 	json.Unmarshal([]byte(result.RestaurantList), &receivedList)
+	//send response to frontend server
 	w.Write([]byte(result.RestaurantList))
 
 }
@@ -90,7 +85,7 @@ func addRestaurant(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	//establishh connection
+	//establishh connection with grpc server
 	conn, err := grpc.Dial(*serverAddr, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		log.Fatalf("failed to dial: %v", err)
@@ -120,7 +115,7 @@ func addRestaurant(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("could not add restaurant: %v", err)
 	}
 
-	//write result and send result to frontend
+	//write result and send confirmation to frontend
 	fmt.Printf(result.AddedConfirmation)
 }
 
