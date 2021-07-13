@@ -24,6 +24,8 @@ type AddGetRestaurantClient interface {
 	// huge number of restaurants.
 	ListRestaurants(ctx context.Context, in *GetListRequest, opts ...grpc.CallOption) (*RestaurantList, error)
 	AddRestaurant(ctx context.Context, in *Restaurant, opts ...grpc.CallOption) (*AddedConfirmation, error)
+	NoRepeatValidation(ctx context.Context, in *NameAddressToken, opts ...grpc.CallOption) (*Uniqueness, error)
+	GetTotalPosts(ctx context.Context, in *TotalPosts, opts ...grpc.CallOption) (*TotalPosts, error)
 }
 
 type addGetRestaurantClient struct {
@@ -52,6 +54,24 @@ func (c *addGetRestaurantClient) AddRestaurant(ctx context.Context, in *Restaura
 	return out, nil
 }
 
+func (c *addGetRestaurantClient) NoRepeatValidation(ctx context.Context, in *NameAddressToken, opts ...grpc.CallOption) (*Uniqueness, error) {
+	out := new(Uniqueness)
+	err := c.cc.Invoke(ctx, "/miniZomato.Add_get_restaurant/NoRepeatValidation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *addGetRestaurantClient) GetTotalPosts(ctx context.Context, in *TotalPosts, opts ...grpc.CallOption) (*TotalPosts, error) {
+	out := new(TotalPosts)
+	err := c.cc.Invoke(ctx, "/miniZomato.Add_get_restaurant/GetTotalPosts", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AddGetRestaurantServer is the server API for AddGetRestaurant service.
 // All implementations must embed UnimplementedAddGetRestaurantServer
 // for forward compatibility
@@ -62,6 +82,8 @@ type AddGetRestaurantServer interface {
 	// huge number of restaurants.
 	ListRestaurants(context.Context, *GetListRequest) (*RestaurantList, error)
 	AddRestaurant(context.Context, *Restaurant) (*AddedConfirmation, error)
+	NoRepeatValidation(context.Context, *NameAddressToken) (*Uniqueness, error)
+	GetTotalPosts(context.Context, *TotalPosts) (*TotalPosts, error)
 	mustEmbedUnimplementedAddGetRestaurantServer()
 }
 
@@ -74,6 +96,12 @@ func (UnimplementedAddGetRestaurantServer) ListRestaurants(context.Context, *Get
 }
 func (UnimplementedAddGetRestaurantServer) AddRestaurant(context.Context, *Restaurant) (*AddedConfirmation, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddRestaurant not implemented")
+}
+func (UnimplementedAddGetRestaurantServer) NoRepeatValidation(context.Context, *NameAddressToken) (*Uniqueness, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NoRepeatValidation not implemented")
+}
+func (UnimplementedAddGetRestaurantServer) GetTotalPosts(context.Context, *TotalPosts) (*TotalPosts, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTotalPosts not implemented")
 }
 func (UnimplementedAddGetRestaurantServer) mustEmbedUnimplementedAddGetRestaurantServer() {}
 
@@ -124,6 +152,42 @@ func _AddGetRestaurant_AddRestaurant_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AddGetRestaurant_NoRepeatValidation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NameAddressToken)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AddGetRestaurantServer).NoRepeatValidation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/miniZomato.Add_get_restaurant/NoRepeatValidation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AddGetRestaurantServer).NoRepeatValidation(ctx, req.(*NameAddressToken))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AddGetRestaurant_GetTotalPosts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TotalPosts)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AddGetRestaurantServer).GetTotalPosts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/miniZomato.Add_get_restaurant/GetTotalPosts",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AddGetRestaurantServer).GetTotalPosts(ctx, req.(*TotalPosts))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AddGetRestaurant_ServiceDesc is the grpc.ServiceDesc for AddGetRestaurant service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -138,6 +202,14 @@ var AddGetRestaurant_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddRestaurant",
 			Handler:    _AddGetRestaurant_AddRestaurant_Handler,
+		},
+		{
+			MethodName: "NoRepeatValidation",
+			Handler:    _AddGetRestaurant_NoRepeatValidation_Handler,
+		},
+		{
+			MethodName: "GetTotalPosts",
+			Handler:    _AddGetRestaurant_GetTotalPosts_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -13,6 +13,10 @@ service Add_get_restaurant {
 
     rpc AddRestaurant(Restaurant) returns (AddedConfirmation) {}
 
+    rpc NoRepeatValidation(NameAddressToken) returns (Uniqueness){}
+
+    rpc GetTotalPosts(TotalPosts) returns (TotalPosts){}
+
 
 }
 
@@ -23,6 +27,7 @@ message Restaurant {
     string address = 4;
     string openingTime = 5;
     string costForTwo = 6;
+    string nameAddressToken =7;
 }
 
 //containing result for inserting new data
@@ -31,11 +36,25 @@ message AddedConfirmation {
 }
 
 //containing request for list
+//having current page and posts per page info
 message GetListRequest {
-    string getListRequest = 1;
+    string currentPage = 1;
+    string postsPerPage =2;
 }
 
 //containing marshalled list
 message RestaurantList {
     string restaurantList = 1;
+}
+
+message NameAddressToken {
+    string nameAddressToken=1;
+}
+
+message Uniqueness {
+    string uniqueness = 1;
+}
+
+message TotalPosts {
+    string totalPosts = 1;
 }
