@@ -22,7 +22,7 @@ function MyCard(props){
             <Grid item xs={8}>
                 <div style={{display: "flex", flexDirection: "column"}}>
                     <div style={{color:"red"}}>
-                        Opens at {item.openingTime}
+                        Opens at {item.openingTime} hrs
                     </div>
                     <div>
                         <Grid container>
